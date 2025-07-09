@@ -22,8 +22,6 @@ void printPattern(int size)
                 }
                 else
                     std::cout << "0 ";
-
-                // if(column != row) std::cout <;
             }
 
             for (int column = 0; column < (size - (row * 2) - 2); column++)
