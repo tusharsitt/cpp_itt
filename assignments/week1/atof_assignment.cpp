@@ -213,19 +213,16 @@ double customAtof(string numberString)
 
     int index = 0;
 
-    // parsing whitespaces
     int parseWhitespacesResutl = parseWhitespaces(numberString, index, length);
     if (parseWhitespacesResutl == -1)
         return 0;
 
-    // parsing initial sign
     parseNumberSign(numberString, index, length, isPositive);
 
     int parseWholePartResult = parseWholePart(numberString, index, length, wholePart);
 
     if (parseWholePartResult == -1)
     {
-        // Implement this
         return calcParsedDouble(wholePart, fractionalPart, exponent, hasDecimalPoint, hasExponent, isPositive, hasPostiveExponent);
     }
 
@@ -235,7 +232,6 @@ double customAtof(string numberString)
     if (parseFractionalPartResult == -1)
     {
 
-        // Implement this
         return calcParsedDouble(wholePart, fractionalPart, exponent, hasDecimalPoint, hasExponent, isPositive, hasPostiveExponent);
     }
 
