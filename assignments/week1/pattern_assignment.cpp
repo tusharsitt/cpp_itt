@@ -80,15 +80,15 @@ int main()
 
     int size{};
 
-    std::cout << "Enter an whole size for the pattern: ";
+    std::cout << "Enter an size for the pattern: ";
 
     std::cin >> size;
 
     // Check for failed state
-    while (std::cin.fail())
+    while (std::cin.fail() || size < 1)
     {
 
-        std::cout << "Enter an valid whole number: ";
+        std::cout << "Enter an valid natural number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> size;
