@@ -4,18 +4,19 @@
 
 void printPattern(int size)
 {
-
     int middleRow = size / 2;
 
     for (int row = 0; row < size; row++)
     {
 
-        if (row < middleRow)
+        if (row <= middleRow)
         {
 
             for (int column = 0; column <= row; column++)
             {
 
+                if (column == middleRow)
+                    continue;
                 if (column % 2 == 0)
                 {
                     std::cout << "1 ";
@@ -32,19 +33,6 @@ void printPattern(int size)
             for (int column = 0; column <= row; column++)
             {
 
-                if (column % 2 == 0)
-                {
-                    std::cout << "1 ";
-                }
-                else
-                    std::cout << "0 ";
-            }
-        }
-
-        else if (row == middleRow)
-        {
-            for (int column = 0; column < size; column++)
-            {
                 if (column % 2 == 0)
                 {
                     std::cout << "1 ";
@@ -92,20 +80,20 @@ int main()
 
     int size{};
 
-    std::cout << "Enter an odd whole size for the pattern: " << '\n';
+    std::cout << "Enter an whole size for the pattern: ";
 
     std::cin >> size;
 
-    // Check for failed state and even integer
-    while (std::cin.fail() || size % 2 == 0)
+    // Check for failed state
+    while (std::cin.fail())
     {
 
-        std::cout << "Enter an valid odd whole number: " << '\n';
+        std::cout << "Enter an valid whole number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> size;
     }
 
-    printPattern(size);
+    printPattern(2 * size + 1);
     return 0;
 }
