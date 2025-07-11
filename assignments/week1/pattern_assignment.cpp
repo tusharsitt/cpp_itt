@@ -4,20 +4,20 @@
 
 void printPattern(int size)
 {
+
     int middleRow = size / 2;
 
-    for (int row = 0; row < size; row++)
+    for (int row = 1; row <= size; row++)
     {
+
+        // print upper half
 
         if (row <= middleRow)
         {
-
-            for (int column = 0; column <= row; column++)
+            for (int column = 1; column <= row; column++)
             {
 
-                if (column == middleRow)
-                    continue;
-                if (column % 2 == 0)
+                if (column % 2 != 0)
                 {
                     std::cout << "1 ";
                 }
@@ -25,15 +25,15 @@ void printPattern(int size)
                     std::cout << "0 ";
             }
 
-            for (int column = 0; column < (size - (row * 2) - 2); column++)
+            for (int column = 1; column <= (size - (row * 2)); column++)
             {
                 std::cout << "  ";
             }
 
-            for (int column = 0; column <= row; column++)
+            for (int column = 1; column <= row; column++)
             {
 
-                if (column % 2 == 0)
+                if (column % 2 != 0)
                 {
                     std::cout << "1 ";
                 }
@@ -42,12 +42,19 @@ void printPattern(int size)
             }
         }
 
+        // print lower half
+
         else
         {
 
-            for (int column = 0; column < (size - row); column++)
+            for (int column = 1; column <= (size - row + 1); column++)
             {
-                if (column % 2 == 0)
+                if (size % 2 != 0 && column == middleRow + 1)
+                {
+                    continue;
+                }
+
+                if (column % 2 != 0)
                 {
                     std::cout << "1 ";
                 }
@@ -55,14 +62,14 @@ void printPattern(int size)
                     std::cout << "0 ";
             }
 
-            for (int column = 0; column <= (middleRow - (size - row)) * 2; column++)
+            for (int column = 1; column <= (size - (2 * (size - row + 1))); column++)
             {
                 std::cout << "  ";
             }
 
-            for (int column = 0; column < (size - row); column++)
+            for (int column = 1; column <= (size - row + 1); column++)
             {
-                if (column % 2 == 0)
+                if (column % 2 != 0)
                 {
                     std::cout << "1 ";
                 }
@@ -94,6 +101,6 @@ int main()
         std::cin >> size;
     }
 
-    printPattern(2 * size + 1);
+    printPattern(size);
     return 0;
 }
