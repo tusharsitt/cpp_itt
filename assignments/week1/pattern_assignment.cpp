@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <limits>
 
 void printAlternatingPattern(int count, int skipColumn)
