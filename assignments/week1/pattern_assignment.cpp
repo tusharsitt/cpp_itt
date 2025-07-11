@@ -2,6 +2,34 @@
 #include <string>
 #include <limits>
 
+void printAlternatingPattern(int count, int skipColumn)
+{
+
+    for (int column = 1; column <= count; column++)
+    {
+
+        if (column == skipColumn)
+        {
+            continue;
+        }
+
+        if (column % 2 != 0)
+        {
+            std::cout << "1 ";
+        }
+        else
+            std::cout << "0 ";
+    }
+}
+
+void printSpaces(int count)
+{
+    for (int column = 1; column <= count; column++)
+    {
+        std::cout << "  ";
+    }
+}
+
 void printPattern(int size)
 {
 
@@ -14,32 +42,12 @@ void printPattern(int size)
 
         if (row <= middleRow)
         {
-            for (int column = 1; column <= row; column++)
-            {
 
-                if (column % 2 != 0)
-                {
-                    std::cout << "1 ";
-                }
-                else
-                    std::cout << "0 ";
-            }
+            printAlternatingPattern(row, -1);
 
-            for (int column = 1; column <= (size - (row * 2)); column++)
-            {
-                std::cout << "  ";
-            }
+            printSpaces(size - (row * 2));
 
-            for (int column = 1; column <= row; column++)
-            {
-
-                if (column % 2 != 0)
-                {
-                    std::cout << "1 ";
-                }
-                else
-                    std::cout << "0 ";
-            }
+            printAlternatingPattern(row, -1);
         }
 
         // print lower half
@@ -47,35 +55,16 @@ void printPattern(int size)
         else
         {
 
-            for (int column = 1; column <= (size - row + 1); column++)
+            int skipColumn = -1;
+            if (size % 2 != 0)
             {
-                if (size % 2 != 0 && column == middleRow + 1)
-                {
-                    continue;
-                }
-
-                if (column % 2 != 0)
-                {
-                    std::cout << "1 ";
-                }
-                else
-                    std::cout << "0 ";
+                skipColumn = middleRow + 1;
             }
+            printAlternatingPattern(size - row + 1, skipColumn);
 
-            for (int column = 1; column <= (size - (2 * (size - row + 1))); column++)
-            {
-                std::cout << "  ";
-            }
+            printSpaces(size - (2 * (size - row + 1)));
 
-            for (int column = 1; column <= (size - row + 1); column++)
-            {
-                if (column % 2 != 0)
-                {
-                    std::cout << "1 ";
-                }
-                else
-                    std::cout << "0 ";
-            }
+            printAlternatingPattern(size - row + 1, -1);
         }
 
         std::cout << '\n';
