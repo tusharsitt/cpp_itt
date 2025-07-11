@@ -1,10 +1,12 @@
 #include <iostream>
 
+#pragma pack(1)
 struct IDs
 {
     unsigned short manufactureId;
     unsigned int productId;
 };
+#pragma pack()
 
 union DeviceId
 {
@@ -19,6 +21,8 @@ int main()
 
     dId.id.manufactureId = 1001;
     dId.id.productId = 23456;
+
+    std::cout << "Size of struct: " << sizeof(dId.id) << std::endl;
 
     for (int i = 0; i < 6; i++)
     {
