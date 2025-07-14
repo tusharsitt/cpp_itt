@@ -4,24 +4,14 @@
 
 using std::string;
 
-bool atofAcceptableChar(char ch)
-{
-    return ch == 'e' || ch == 'E' || ((int)ch >= 48 && (int)ch <= 57) || ch == '-' || ch == '+' || ch == '.';
-}
-
-int parseWhitespaces(string numberString, int &index, int length)
+void parseWhitespaces(string &numberString, int &index, int length)
 {
 
     while (index < length && numberString[index] == ' ')
         index++;
-
-    if (index == length)
-        return -1;
-
-    return 0;
 }
 
-int parseNumberSign(string numberString, int &index, int length, bool &isPositive)
+bool parseNumberSign(string &numberString, int &index, int length)
 {
 
     if (index < length)
@@ -32,83 +22,65 @@ int parseNumberSign(string numberString, int &index, int length, bool &isPositiv
         }
         else if (numberString[index] == '-')
         {
-            isPositive = false;
+
             index++;
+            return false;
         }
     }
 
-    return 0;
+    return true;
 }
 
-int parseWholePart(string numberString, int &index, int length, double &wholePart)
+int parseWholePart(string &numberString, int &index, int length)
 {
 
-    while (index < length)
+    int wholePart{0};
+    while (index < length && (numberString[index] >= '0' && numberString[index] <= '9'))
     {
 
-        if (numberString[index] == '.' || numberString[index] == 'e' || numberString[index] == 'E')
-        {
-            return 0;
-        }
-        else if (numberString[index] >= '0' && numberString[index] <= '9')
-        {
-            wholePart = wholePart * 10 + (numberString[index] - '0');
-            index++;
-        }
-        else
-        {
-            return -1;
-        }
+        wholePart = wholePart * 10 + (numberString[index] - '0');
+        index++;
     }
 
-    return 0;
+    return wholePart;
 }
 
-int parseDecimalPoint(string numberString, int &index, int length, bool &hasDecimalPoint)
+bool parseDecimalPoint(string &numberString, int &index, int length)
 {
     if (index < length && numberString[index] == '.')
     {
-        hasDecimalPoint = true;
+        index++;
+        return true;
+    }
+    return false;
+}
+
+int parseFractionalPart(string &numberString, int &index, int length, int &decimalPlaces)
+{
+    int fractionalPart{0};
+    decimalPlaces = 0;
+
+    while (index < length && numberString[index] >= '0' && numberString[index] <= '9')
+    {
+        fractionalPart = fractionalPart * 10 + (numberString[index] - '0');
+        decimalPlaces++;
         index++;
     }
-    return 0;
+
+    return fractionalPart;
 }
 
-int parseFractionalPart(string numberString, int &index, int length, double &fractionalPart)
-{
-
-    while (index < length)
-    {
-
-        if (numberString[index] == 'e' || numberString[index] == 'E')
-        {
-            return 0;
-        }
-        else if (numberString[index] >= '0' && numberString[index] <= '9')
-        {
-            fractionalPart = fractionalPart * 10 + (numberString[index] - '0');
-            index++;
-        }
-        else
-        {
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
-int parseHasExponent(string numberString, int &index, int length, bool &hasExponent)
+bool parseHasExponent(string &numberString, int &index, int length)
 {
     if (index < length && (numberString[index] == 'e' || numberString[index] == 'E'))
     {
-        hasExponent = true;
         index++;
+        return true;
     }
-    return 0;
+    return false;
 }
 
-int parseExponentSign(string numberString, int &index, int length, bool &hasPostiveExponent)
+bool parseExponentSign(string &numberString, int &index, int length)
 {
     if (index < length)
     {
@@ -118,78 +90,57 @@ int parseExponentSign(string numberString, int &index, int length, bool &hasPost
         }
         else if (numberString[index] == '-')
         {
-            hasPostiveExponent = false;
             index++;
+            return false;
         }
     }
 
-    return 0;
+    return true;
 }
 
-int parseExponent(string numberString, int &index, int length, double &exponent)
+int parseExponent(string &numberString, int &index, int length)
 {
 
-    while (index < length)
+    int exponent{0};
+    while (index < length && (numberString[index] >= '0' && numberString[index] <= '9'))
     {
 
-        if (numberString[index] >= '0' && numberString[index] <= '9')
-        {
-            exponent = exponent * 10 + (numberString[index] - '0');
-            index++;
-        }
-        else
-        {
-            return -1;
-        }
+        exponent = exponent * 10 + (numberString[index] - '0');
+        index++;
     }
 
-    return 0;
+    return exponent;
 }
 
-double calcParsedDouble(double wholePart, double fractionalPart, double exponent, bool hasDecimalPoint, bool hasExponent, bool isPositive, bool hasPositiveExponent)
+double calcParsedDouble(int wholePart, int fractionalPart, int exponent, bool hasDecimalPoint, bool hasExponent, bool isPositive, bool hasPostivieExponent, int decimalPlaces)
 {
 
     double parsedDouble{0};
 
     if (hasExponent)
     {
+
+        if (!hasPostivieExponent)
+            exponent *= -1;
+
         if (fractionalPart == 0)
         {
-            if (hasPositiveExponent)
-            {
-                parsedDouble = wholePart * (pow(10, exponent));
-            }
-            else
-                parsedDouble = wholePart / (pow(10, exponent));
+            parsedDouble = wholePart * (pow(10, exponent));
         }
         else
         {
-            std::string ss = std::to_string((int)fractionalPart);
-            int fractionalPartLength = ss.length();
 
-            if (hasPositiveExponent)
-            {
-                exponent -= fractionalPartLength;
-            }
-            else
-                exponent += fractionalPartLength;
+            exponent -= decimalPlaces;
 
-            wholePart = (wholePart * (pow(10, fractionalPartLength))) + fractionalPart;
+            wholePart = (wholePart * (pow(10, decimalPlaces))) + fractionalPart;
 
-            if (hasPositiveExponent)
-            {
-                return parsedDouble = wholePart * (pow(10, exponent));
-            }
-            else
-                parsedDouble = wholePart / (pow(10, exponent));
+            parsedDouble = wholePart * (pow(10, exponent));
         }
     }
     else
     {
-        std::string ss = std::to_string((int)fractionalPart);
-        int fractionalPartLength = ss.length();
 
-        parsedDouble = wholePart + (fractionalPart / pow(10, fractionalPartLength));
+        parsedDouble = wholePart + (fractionalPart / pow(10, decimalPlaces));
     }
 
     if (!isPositive)
@@ -198,50 +149,32 @@ double calcParsedDouble(double wholePart, double fractionalPart, double exponent
         return parsedDouble;
 }
 
-double customAtof(string numberString)
+double customAtof(string &numberString)
 {
-    double wholePart{0};
-    double fractionalPart{0};
-    double exponent{0};
-
-    bool hasDecimalPoint = false;
-    bool hasExponent = false;
-    bool isPositive = true;
-    bool hasPostiveExponent = true;
-
     int length = numberString.length();
 
     int index = 0;
 
-    int parseWhitespacesResutl = parseWhitespaces(numberString, index, length);
-    if (parseWhitespacesResutl == -1)
+    parseWhitespaces(numberString, index, length);
+    if (index == length)
         return 0;
 
-    parseNumberSign(numberString, index, length, isPositive);
+    bool isPositive = parseNumberSign(numberString, index, length);
 
-    int parseWholePartResult = parseWholePart(numberString, index, length, wholePart);
+    int wholePart = parseWholePart(numberString, index, length);
 
-    if (parseWholePartResult == -1)
-    {
-        return calcParsedDouble(wholePart, fractionalPart, exponent, hasDecimalPoint, hasExponent, isPositive, hasPostiveExponent);
-    }
+    bool hasDecimalPoint = parseDecimalPoint(numberString, index, length);
 
-    parseDecimalPoint(numberString, index, length, hasDecimalPoint);
+    int decimalPlaces{0};
+    int fractionalPart = parseFractionalPart(numberString, index, length, decimalPlaces);
 
-    int parseFractionalPartResult = parseFractionalPart(numberString, index, length, fractionalPart);
-    if (parseFractionalPartResult == -1)
-    {
+    bool hasExponent = parseHasExponent(numberString, index, length);
 
-        return calcParsedDouble(wholePart, fractionalPart, exponent, hasDecimalPoint, hasExponent, isPositive, hasPostiveExponent);
-    }
+    bool hasPostivieExponent = parseExponentSign(numberString, index, length);
 
-    parseHasExponent(numberString, index, length, hasExponent);
+    int exponent = parseExponent(numberString, index, length);
 
-    parseExponentSign(numberString, index, length, hasPostiveExponent);
-
-    int parseExponentResult = parseExponent(numberString, index, length, exponent);
-
-    return calcParsedDouble(wholePart, fractionalPart, exponent, hasDecimalPoint, hasExponent, isPositive, hasPostiveExponent);
+    return calcParsedDouble(wholePart, fractionalPart, exponent, hasDecimalPoint, hasExponent, isPositive, hasPostivieExponent, decimalPlaces);
 }
 
 int main()
