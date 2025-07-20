@@ -1,4 +1,4 @@
-#include "../include/addition.h"
+#include "addition.h"
 
 double add(double operand1, double operand2)
 {

@@ -1,9 +1,9 @@
 #include <iostream>
-#include <limits>
-#include "./include/addition.h"
-#include "./include/multiplication.h"
-#include "./include/division.h"
-#include "./include/subtraction.h"
+#include <cmath>
+#include "addition.h"
+#include "multiplication.h"
+#include "division.h"
+#include "subtraction.h"
 
 struct Operands
 {
@@ -14,7 +14,8 @@ struct Operands
 void clearBuffer()
 {
     std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    while (std::cin.get() != '\n')
+        ;
 }
 
 int inputOperationCode()
@@ -30,7 +31,7 @@ int inputOperationCode()
 
     std::cin >> opCode;
 
-    while (std::cin.fail() || (opCode < 1 || opCode > 4))
+    while (std::cin.fail() || std::cin.peek() != '\n' || (opCode < 1 || opCode > 4))
     {
 
         clearBuffer();
@@ -56,10 +57,8 @@ double inputOperand()
     return operand;
 }
 
-void handleOperation(int opCode, Operands &operands)
+double handleOperation(int opCode, Operands &operands)
 {
-
-    bool badOperation = false;
     double result{0};
 
     switch (opCode)
@@ -73,25 +72,15 @@ void handleOperation(int opCode, Operands &operands)
         break;
 
     case 3:
-        result = multiple(operands.operand1, operands.operand2);
+        result = multiply(operands.operand1, operands.operand2);
         break;
 
     case 4:
         result = divide(operands.operand1, operands.operand2);
         break;
-
-    default:
-        badOperation = true;
-        break;
     }
 
-    if (badOperation)
-    {
-        std::cout << "Something went wrong" << '\n';
-        return;
-    }
-
-    std::cout << "Resut is: " << result << '\n';
+    return result;
 }
 
 int main()
@@ -108,5 +97,11 @@ int main()
     std::cout << "Enter second operand: ";
     operands.operand2 = inputOperand();
 
-    handleOperation(opCode, operands);
+    double result = handleOperation(opCode, operands);
+    if (!std::isnan(result))
+    {
+        std::cout << "Result is: " << result << '\n';
+    }
+
+    return 0;
 }
