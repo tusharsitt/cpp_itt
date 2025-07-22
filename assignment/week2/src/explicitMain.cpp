@@ -3,6 +3,8 @@
 #include <cmath>
 #include <limits>
 
+typedef double (*MathFunction)(double, double);
+
 struct Operands
 {
     double operand1;
@@ -63,18 +65,17 @@ double inputOperand()
 
 double callLibraryFunction(Operands &operands, void *mathLibHandler, const char *operationString)
 {
-    double (*func)(double, double) = (double (*)(double, double))dlsym(mathLibHandler, operationString);
-    if (func == NULL)
+    MathFunction operation = (MathFunction)dlsym(mathLibHandler, operationString);
+    if (operation == nullptr)
     {
         std::cout << "Error in accessing funciton" << '\n';
         return std::numeric_limits<double>::quiet_NaN();
     }
-    return func(operands.operand1, operands.operand2);
+    return operation(operands.operand1, operands.operand2);
 }
 
 double handleOperation(char opCode, Operands &operands, void *mathLibHandler)
 {
-
     double result{0};
     switch (opCode)
     {
@@ -110,7 +111,7 @@ int main()
 
     void *mathLibHandler = dlopen("libdynamicMathLib.so", RTLD_LAZY);
 
-    if (mathLibHandler == NULL)
+    if (mathLibHandler == nullptr)
     {
         std::cout << "Error in loading library" << '\n';
         return 0;
