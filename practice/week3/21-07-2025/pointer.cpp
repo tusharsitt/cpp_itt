@@ -39,4 +39,14 @@ int main()
     PRINT(nullPointer);
     // defrence of nullptr returns in crash
     // PRINT(*nullPointer);
+
+    // std::nullptr_t is implicity converted to any type it is being pointed by,
+    // but you can't do the other way around.
+    // int *intPtr = (std::nullptr_t)&a;
+
+    // cant point to literal,
+    // int *const constantPtr{678};
+    // but you can do like this
+    const int &constantReftoLiteral = 54;
+    const int *pppp = &constantReftoLiteral;
 }
