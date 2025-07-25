@@ -18,7 +18,9 @@ int main()
 {
     int l = 3;
 
-    int (*ptr)[3] = new int[3][3]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int dim = 54;
+
+    int (*ptr)[3] = new int[dim][3]{1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     std::cout << ptr << std::endl;
     std::cout << ptr + 1 << std::endl;
